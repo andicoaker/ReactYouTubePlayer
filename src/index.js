@@ -47,13 +47,16 @@ class App extends Component {
 
   //when SearchBar below calls onSearchTermChange it will use the term string which will be sent to this.videoSearch in the constructor above. The term will pop-up and perform the YT search.
 
+  // Installed Lodash. created videoSearch method using Lodash debounce. debounce returns a function that can only be run every 300 milliseconds (or what ever amount of time we specify). it can be called multiple times, but will only run and render every 300 milliseconds.
+  // Updated SearchBar onSearchTermChange to pass the newly created videoSearch function.
+
   render () {
 
-    const videoSearch = _.dbounce( (term) => { this.videoSearch(term) }, 300);
+    const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 300);
 
     return (
       <div>
-        <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
+        <SearchBar onSearchTermChange={videoSearch} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
