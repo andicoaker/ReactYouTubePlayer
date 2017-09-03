@@ -2,8 +2,9 @@ import React from 'react';
 
 const VideoDetail = ({video}) => {
 
+  // when app first runs there isn't a selectedVideo yet, so loading message will be shown instead.
   if(!video){
-    return <div>Loding...</div>;
+    return <div>Loading...</div>;
   }
 
   const videoId = video.id.videoId;

@@ -15,22 +15,35 @@ class App extends Component {
   constructor (props)  {
     super (props);
 
-    this.state = { videos: [] };
+    // when the app starts the selectedVideois set to null, nothing has been selected yet
+    this.state = {
+      videos: [],
+      selectedVideo: null
+    };
 
+    // request is sent to grab list of videos, when rquest is complete we pass a list of videos to this.state.videos and first video in that list will be set to selectedVideo.
     YTSearch ({ key: API_KEY, term: 'pugs'}, (videos) => {
       console.log(videos);
 
       // when you have a key & value with the same name, you can condense videos: videos to be just videos.
-      this.setState({ videos });
+      this.setState({
+        videos: videos,
+        selectedVideo: videos[0]
+      });
     });
   }
+
+  // since we're setting state the page re-renders, VideoDetail is rendering again with this.state.selectedVideo which is now equal to the first video.
+      // if VideoList calls this function then selectedVideo on App is going to update. Passing a property to VideoList.
 
   render () {
     return (
       <div>
         <SearchBar />
-        <VideoDetail video={this.state.videos[0]} />
-        <VideoList videos={this.state.videos} />
+        <VideoDetail video={this.state.selectedVideo} />
+        <VideoList
+          onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
+          videos={this.state.videos} />
       </div>
     );
   }
