@@ -1,3 +1,5 @@
+import _ from 'lodash';
+  // use _ instead of Lodash
 import React, {Component} from 'react';
 import ReactDom from 'react-dom';
 import YTSearch from 'youtube-api-search';
@@ -22,10 +24,17 @@ class App extends Component {
     };
 
     // request is sent to grab list of videos, when rquest is complete we pass a list of videos to this.state.videos and first video in that list will be set to selectedVideo.
-    YTSearch ({ key: API_KEY, term: 'pugs'}, (videos) => {
-      console.log(videos);
 
-      // when you have a key & value with the same name, you can condense videos: videos to be just videos.
+    this.videoSearch ('pugs');
+  }
+
+  // removed YTSearch from constructor and moved it down to it's own item. we still want an initial item to show up when the page is initiall rendered, so we added this.videoSearch to the constructor above.
+
+  //
+
+  videoSearch (term){
+    YTSearch ({ key: API_KEY, term: term}, (videos) => {
+      // console.log(videos);
       this.setState({
         videos: videos,
         selectedVideo: videos[0]
@@ -36,10 +45,15 @@ class App extends Component {
   // since we're setting state the page re-renders, VideoDetail is rendering again with this.state.selectedVideo which is now equal to the first video.
       // if VideoList calls this function then selectedVideo on App is going to update. Passing a property to VideoList.
 
+  //when SearchBar below calls onSearchTermChange it will use the term string which will be sent to this.videoSearch in the constructor above. The term will pop-up and perform the YT search.
+
   render () {
+
+    const videoSearch = _.dbounce( (term) => { this.videoSearch(term) }, 300);
+
     return (
       <div>
-        <SearchBar />
+        <SearchBar onSearchTermChange={term => this.videoSearch(term)} />
         <VideoDetail video={this.state.selectedVideo} />
         <VideoList
           onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
